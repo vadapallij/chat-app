@@ -1,0 +1,9 @@
+name: chat-app
+language: go
+
+database:
+  type: postgres
+
+runtime:
+  http:
+    port: 8080
