@@ -37,15 +37,16 @@ func main() {
 	}
 	log.Println("Connected to PostgreSQL database")
 
-	// Initialize Anthropic service
-	apiKey := os.Getenv("ANTHROPIC_API_KEY")
-	if apiKey == "" {
-		log.Fatal("ANTHROPIC_API_KEY environment variable is required")
+	// Initialize vLLM service
+	vllmURL := os.Getenv("VLLM_BASE_URL")
+	if vllmURL == "" {
+		vllmURL = "http://localhost:5000"
+		log.Printf("VLLM_BASE_URL not set, using default: %s", vllmURL)
 	}
-	anthropicService := services.NewAnthropicService(apiKey)
+	vllmService := services.NewVLLMService(vllmURL)
 
 	// Initialize workflows
-	chatWorkflows := workflows.NewChatWorkflows(db, anthropicService)
+	chatWorkflows := workflows.NewChatWorkflows(db, vllmService)
 
 	// Initialize DBOS context for durable workflows
 	dbosCtx, err := dbos.NewDBOSContext(context.Background(), dbos.Config{
@@ -69,7 +70,7 @@ func main() {
 	log.Println("DBOS initialized - durable workflows enabled")
 
 	// Initialize handlers
-	chatHandler := handlers.NewChatHandler(db, anthropicService, dbosCtx, chatWorkflows)
+	chatHandler := handlers.NewChatHandler(db, vllmService, dbosCtx, chatWorkflows)
 
 	// Setup Gin router
 	router := gin.Default()

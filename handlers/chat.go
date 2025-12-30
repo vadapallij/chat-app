@@ -16,19 +16,19 @@ import (
 
 // ChatHandler handles chat-related HTTP requests
 type ChatHandler struct {
-	db               *sql.DB
-	anthropicService *services.AnthropicService
-	dbosCtx          dbos.DBOSContext
-	workflows        *workflows.ChatWorkflows
+	db          *sql.DB
+	vllmService *services.VLLMService
+	dbosCtx     dbos.DBOSContext
+	workflows   *workflows.ChatWorkflows
 }
 
 // NewChatHandler creates a new chat handler
-func NewChatHandler(db *sql.DB, anthropicService *services.AnthropicService, dbosCtx dbos.DBOSContext, wf *workflows.ChatWorkflows) *ChatHandler {
+func NewChatHandler(db *sql.DB, vllmService *services.VLLMService, dbosCtx dbos.DBOSContext, wf *workflows.ChatWorkflows) *ChatHandler {
 	return &ChatHandler{
-		db:               db,
-		anthropicService: anthropicService,
-		dbosCtx:          dbosCtx,
-		workflows:        wf,
+		db:          db,
+		vllmService: vllmService,
+		dbosCtx:     dbosCtx,
+		workflows:   wf,
 	}
 }
 

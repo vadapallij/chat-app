@@ -14,15 +14,15 @@ import (
 
 // ChatWorkflows contains DBOS workflows for chat operations
 type ChatWorkflows struct {
-	db               *sql.DB
-	anthropicService *services.AnthropicService
+	db          *sql.DB
+	vllmService *services.VLLMService
 }
 
 // NewChatWorkflows creates a new ChatWorkflows instance
-func NewChatWorkflows(db *sql.DB, anthropicService *services.AnthropicService) *ChatWorkflows {
+func NewChatWorkflows(db *sql.DB, vllmService *services.VLLMService) *ChatWorkflows {
 	return &ChatWorkflows{
-		db:               db,
-		anthropicService: anthropicService,
+		db:          db,
+		vllmService: vllmService,
 	}
 }
 
@@ -60,9 +60,9 @@ func (w *ChatWorkflows) SendMessageWorkflow(ctx dbos.DBOSContext, input SendMess
 	}
 	output.UserMessage = userMsg
 
-	// Step 3: Get AI response from Anthropic (durable step - will retry on failure)
+	// Step 3: Get AI response from vLLM (durable step - will retry on failure)
 	aiResponse, err := dbos.RunAsStep(ctx, func(stepCtx context.Context) (string, error) {
-		return w.anthropicService.Chat(messages, input.Content)
+		return w.vllmService.Chat(messages, input.Content)
 	})
 	if err != nil {
 		return output, err

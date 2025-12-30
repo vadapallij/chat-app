@@ -1,0 +1,78 @@
+CHAT-APP INSTALLATION CHECKLIST
+================================
+
+Follow this checklist to ensure everything is set up correctly.
+
+PREREQUISITES:
+□ NVIDIA RTX 5090 GPU installed and recognized
+□ NVIDIA drivers installed (check: nvidia-smi)
+□ CUDA 12.x installed (check: nvcc --version)
+□ Go 1.23+ installed (check: go version)
+□ Python 3.8+ installed (check: python3 --version)
+□ pipx installed (check: pipx --version)
+
+POSTGRESQL SETUP:
+□ PostgreSQL installed (check: psql --version)
+□ PostgreSQL service running (check: sudo systemctl status postgresql)
+□ Can connect to PostgreSQL (check: psql -l)
+□ Database 'chat_app' created (run: createdb chat_app)
+□ Migrations applied (run: psql chat_app < migrations/001_init.sql)
+□ Tables verified (run: psql chat_app -c "\dt")
+
+VLLM SETUP:
+□ Old vLLM uninstalled (run: pipx uninstall vllm)
+□ Fresh vLLM installed (run: pipx install vllm)
+□ vLLM command available (check: vllm --version)
+□ HuggingFace CLI available (check: pipx run huggingface-cli --version)
+□ HuggingFace account created
+□ HuggingFace token obtained (from: https://huggingface.co/settings/tokens)
+□ Logged into HuggingFace (run: pipx run huggingface-cli login)
+□ Access to Llama 3.1 granted (visit: https://huggingface.co/meta-llama/Meta-Llama-3.1-8B-Instruct)
+
+ENVIRONMENT CONFIGURATION:
+□ .env.example exists in project directory
+□ .env file created (run: cp .env.example .env)
+□ DATABASE_URL configured in .env
+□ VLLM_BASE_URL configured in .env (default: http://localhost:5000)
+□ PORT configured in .env (default: 8080)
+
+GO APPLICATION:
+□ Go dependencies downloaded (run: go mod download)
+□ Application compiles (run: go build)
+□ services/vllm.go exists
+□ main.go references vLLM service
+
+RUNTIME VERIFICATION:
+□ vLLM server starts successfully (run: ./start-vllm-rtx5090.sh)
+□ vLLM downloads Llama 3.1 8B model (~16GB, first run only)
+□ vLLM shows "Uvicorn running on http://0.0.0.0:5000"
+□ vLLM responds to health check (run: curl http://localhost:5000/v1/models)
+□ Chat app starts successfully (run: go run main.go)
+□ Chat app shows "Starting server on port 8080"
+□ Chat app responds to health check (run: curl http://localhost:8080/health)
+□ Browser can access http://localhost:8080
+□ Can create new conversation in UI
+□ Can send message and receive AI response
+□ GPU shows activity during inference (run: nvidia-smi)
+
+OPTIONAL OPTIMIZATIONS:
+□ Prefix caching enabled in vLLM
+□ GPU memory utilization set to 0.95
+□ Max model length set to 32768
+□ bfloat16 precision enabled
+
+TROUBLESHOOTING RESOURCES:
+□ Read SETUP_SUMMARY.md
+□ Read QUICK_START.md
+□ Read VLLM_SETUP.md for vLLM issues
+□ Read POSTGRESQL_SETUP.md for database issues
+
+COMPLETION:
+□ Everything works end-to-end
+□ Can have a conversation with the AI
+□ Ready to customize and extend!
+
+======================================
+If all boxes are checked, you're done!
+🚀 Enjoy your local AI chat app!
+======================================
